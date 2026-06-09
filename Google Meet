@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>آموزش Google Meet | بانیان صنعت پرشین</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:'Vazirmatn',sans-serif;
+  color:#e8f0fe;
+  min-height:100vh;
+  overflow-x:hidden;
+  background:#0d1b3e;
+}
+
+/* ===== MESH GRADIENT BACKGROUND ===== */
+.mesh-bg{
+  position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 10% 10%, rgba(26,82,160,0.75) 0%,transparent 55%),
+    radial-gradient(ellipse 55% 70% at 90% 15%, rgba(15,55,120,0.70) 0%,transparent 50%),
+    radial-gradient(ellipse 60% 50% at 50% 90%, rgba(230,100,20,0.28) 0%,transparent 55%),
+    radial-gradient(ellipse 80% 40% at 80% 60%, rgba(10,40,100,0.65) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 60% at 20% 75%, rgba(20,60,140,0.50) 0%,transparent 55%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, rgba(8,30,80,0.90) 0%,transparent 100%),
+    linear-gradient(145deg, #0d1b3e 0%, #0a1530 40%, #071228 100%);
+  pointer-events:none;
+}
+.mesh-bg::after{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle 600px at 30% 40%, rgba(255,120,30,0.06) 0%,transparent 60%),
+    radial-gradient(circle 400px at 70% 70%, rgba(30,100,220,0.10) 0%,transparent 60%);
+  pointer-events:none;
+}
+
+/* ===== PROGRESS BAR ===== */
+#readingBar{
+  position:fixed;top:0;left:0;right:0;height:4px;z-index:9999;
+  background:rgba(255,255,255,0.08);
+}
+#readingFill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,#e66a1a,#ff9f50);
+  border-radius:0 4px 4px 0;
+  transition:width .2s ease;
+  box-shadow:0 0 12px rgba(255,120,30,0.6);
+}
+
+/* ===== FLOATING NAV ===== */
+#floatNav{
+  position:fixed;right:1.2rem;top:50%;transform:translateY(-50%);z-index:500;
+  display:flex;flex-direction:column;gap:.5rem;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:50px;padding:.6rem .5rem;
+  backdrop-filter:blur(20px);
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+.nav-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:rgba(255,255,255,0.25);
+  cursor:pointer;border:none;
+  transition:all .25s;position:relative;
+  outline:none;
+}
+.nav-dot:hover,.nav-dot.active{
+  background:#e66a1a;
+  box-shadow:0 0 10px rgba(230,106,26,.7);
+  transform:scale(1.35);
+}
+.nav-dot::after{
+  content:attr(data-label);
+  position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%);
+  background:rgba(10,25,65,0.92);color:#e8f0fe;
+  font-size:.72rem;white-space:nowrap;padding:4px 10px;border-radius:6px;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+  font-family:'Vazirmatn',sans-serif;
+  border:1px solid rgba(255,255,255,0.1);
+}
+.nav-dot:hover::after{opacity:1}
+
+/* ===== BACK TO TOP ===== */
+#backTop{
+  position:fixed;left:1.2rem;bottom:1.5rem;z-index:500;
+  width:44px;height:44px;border-radius:50%;border:none;
+  background:linear-gradient(135deg,#1a4fa0,#e66a1a);
+  color:#fff;font-size:1.1rem;cursor:pointer;
+  box-shadow:0 6px 24px rgba(0,0,0,0.4);
+  transition:all .25s;opacity:0;transform:scale(0.8);
+}
+#backTop.show{opacity:1;transform:scale(1)}
+#backTop:hover{transform:scale(1.12)}
+
+/* ===== GLASSMORPHISM CARD ===== */
+.glass{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:22px;
+  backdrop-filter:blur(22px) saturate(1.5);
+  -webkit-backdrop-filter:blur(22px);
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.35),
+    0 2px 8px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+  transition:transform .3s cubic-bezier(.34,1.4,.64,1), box-shadow .3s ease;
+}
+.glass:hover{
+  transform:translateY(-5px) scale(1.012);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.45),
+    0 4px 16px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.glass-sm{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.11);
+  border-radius:16px;
+  backdrop-filter:blur(18px);
+  box-shadow:0 4px 20px rgba(0,0,0,0.28),inset 0 1px 0 rgba(255,255,255,0.08);
+  transition:transform .25s cubic-bezier(.34,1.4,.64,1),box-shadow .25s;
+}
+.glass-sm:hover{transform:translateY(-3px);box-shadow:0 10px 36px rgba(0,0,0,0.38)}
+
+/* ===== ACCENT ===== */
+.accent{color:#ff8c42}
+.accent-bg{background:linear-gradient(135deg,#e66a1a,#ff9f50)}
+.blue-accent{color:#6ab0ff}
+
+/* ===== SCROLL ANIMATIONS ===== */
+.reveal{
+  opacity:0;transform:translateY(30px);
+  transition:opacity .65s ease, transform .65s cubic-bezier(.34,1.2,.64,1);
+}
+.reveal.vis{opacity:1;transform:none}
+.reveal-l{opacity:0;transform:translateX(-30px);transition:opacity .6s ease,transform .6s cubic-bezier(.34,1.2,.64,1)}
+.reveal-l.vis{opacity:1;transform:none}
+.reveal-r{opacity:0;transform:translateX(30px);transition:opacity .6s ease,transform .6s cubic-bezier(.34,1.2,.64,1)}
+.reveal-r.vis{opacity:1;transform:none}
+
+/* ===== WRAPPER ===== */
+.wrapper{position:relative;z-index:1}
+.container{max-width:1100px;margin:0 auto;padding:0 1.2rem}
+
+/* ===== HEADER ===== */
+header{
+  position:sticky;top:0;z-index:400;
+  background:rgba(8,20,55,0.75);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  backdrop-filter:blur(24px);
+  padding:.75rem 0;
+}
+.header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.logo-area{display:flex;align-items:center;gap:.9rem}
+.logo-img{height:48px;width:auto;border-radius:8px}
+.brand-name{font-size:1rem;font-weight:700;color:#e8f0fe;line-height:1.3}
+.brand-sub{font-size:.72rem;color:#94b8e8;font-weight:400}
+.header-badge{
+  background:rgba(230,106,26,.18);border:1px solid rgba(230,106,26,.35);
+  border-radius:100px;padding:.35rem 1rem;font-size:.78rem;color:#ff9f50;font-weight:500;
+}
+
+/* ===== HERO ===== */
+.hero{padding:4.5rem 0 3rem;text-align:center}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:rgba(230,106,26,.15);border:1px solid rgba(230,106,26,.3);
+  border-radius:100px;padding:.4rem 1.2rem;font-size:.82rem;color:#ff8c42;
+  margin-bottom:1.2rem;
+}
+.hero h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:800;line-height:1.25;margin-bottom:1rem;color:#fff}
+.hero h1 span{
+  background:linear-gradient(135deg,#6ab0ff,#ff8c42);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-desc{font-size:1.05rem;color:#94b8e8;max-width:640px;margin:0 auto 2rem;line-height:1.9}
+.hero-stats{display:flex;gap:1.2rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.2rem}
+.stat-chip{
+  display:flex;align-items:center;gap:.5rem;
+  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);
+  border-radius:100px;padding:.45rem 1.1rem;font-size:.85rem;color:#c5d8f5;
+}
+.stat-chip i{color:#ff8c42}
+.btn-start{
+  background:linear-gradient(135deg,#e66a1a,#ff9f50);
+  color:#fff;border:none;border-radius:16px;
+  padding:1rem 2.8rem;font-size:1.05rem;font-family:'Vazirmatn',sans-serif;
+  font-weight:700;cursor:pointer;letter-spacing:.02em;
+  box-shadow:0 8px 28px rgba(230,106,26,0.45);
+  transition:all .25s;
+}
+.btn-start:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(230,106,26,0.55)}
+.btn-start:active{transform:scale(.97)}
+
+/* ===== SECTION ===== */
+section{padding:3.5rem 0;scroll-margin-top:80px}
+.sec-header{margin-bottom:2rem}
+.sec-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,#e66a1a,#ff9f50);
+  color:#fff;font-size:.9rem;font-weight:800;margin-bottom:.6rem;
+  box-shadow:0 4px 16px rgba(230,106,26,0.4);
+}
+.sec-header h2{font-size:1.55rem;font-weight:700;color:#fff;margin-bottom:.4rem}
+.sec-header p{font-size:.92rem;color:#7fa8d8;line-height:1.8}
+.divider{width:60px;height:3px;background:linear-gradient(90deg,#e66a1a,transparent);border-radius:10px;margin:.6rem 0}
+
+/* ===== BENTO GRID ===== */
+.bento{display:grid;gap:1.1rem}
+.bento-3{grid-template-columns:repeat(3,1fr)}
+.bento-2{grid-template-columns:repeat(2,1fr)}
+.bento-auto{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.span2{grid-column:span 2}
+.span3{grid-column:span 3}
+.bento-card{padding:1.5rem}
+.bento-card.tall{min-height:200px}
+
+/* ===== SECTION 1 — INTRO ===== */
+.intro-main{padding:2rem;display:flex;flex-direction:column;gap:1rem}
+.intro-logo-meet{font-size:3.5rem;margin-bottom:.3rem}
+.intro-title{font-size:1.15rem;font-weight:700;color:#fff;margin-bottom:.5rem}
+.intro-body{font-size:.88rem;color:#94b8e8;line-height:1.85}
+.badge-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem}
+.badge{
+  display:inline-block;border-radius:100px;padding:3px 12px;
+  font-size:.75rem;font-weight:600;
+}
+.badge-blue{background:rgba(106,176,255,.15);color:#6ab0ff;border:1px solid rgba(106,176,255,.25)}
+.badge-orange{background:rgba(230,106,26,.18);color:#ff9f50;border:1px solid rgba(230,106,26,.3)}
+.benefit-item{display:flex;align-items:flex-start;gap:.7rem;margin-bottom:.7rem}
+.benefit-icon{
+  width:34px;height:34px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:.95rem;
+  background:rgba(230,106,26,.18);color:#ff8c42;
+  border:1px solid rgba(230,106,26,.25);
+}
+.benefit-text strong{display:block;font-size:.88rem;font-weight:600;color:#e8f0fe;margin-bottom:2px}
+.benefit-text span{font-size:.8rem;color:#7fa8d8}
+
+/* ===== SECTION 2 — JOIN ===== */
+.step-card{padding:1.4rem;text-align:center}
+.step-icon{
+  width:56px;height:56px;border-radius:16px;
+  background:linear-gradient(135deg,rgba(26,79,160,0.7),rgba(10,30,80,0.7));
+  border:1px solid rgba(106,176,255,0.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;margin:0 auto .8rem;
+  box-shadow:0 4px 20px rgba(26,79,160,0.35);
+}
+.step-card h4{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:.4rem}
+.step-card p{font-size:.82rem;color:#7fa8d8;line-height:1.75}
+.step-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:24px;height:24px;border-radius:50%;
+  background:linear-gradient(135deg,#e66a1a,#ff9f50);
+  color:#fff;font-size:.72rem;font-weight:800;margin-bottom:.6rem;
+}
+.screenshot{
+  width:100%;border-radius:14px;margin-top:12px;
+  border:1px solid rgba(255,255,255,0.12);
+  transition:transform .2s;
+}
+.screenshot:hover{transform:scale(1.02)}
+
+/* ===== SECTION 3 — FEATURES ===== */
+.feat-card{padding:1.3rem;display:flex;flex-direction:column;align-items:flex-start;gap:.6rem}
+.feat-icon{
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;
+  transition:transform .25s;flex-shrink:0;
+}
+.feat-card:hover .feat-icon{transform:scale(1.12) rotate(-4deg)}
+.fi-mic{background:rgba(230,106,26,.2);color:#ff9f50;border:1px solid rgba(230,106,26,.3)}
+.fi-cam{background:rgba(26,100,200,.25);color:#6ab0ff;border:1px solid rgba(26,100,200,.3)}
+.fi-share{background:rgba(34,197,94,.18);color:#4ade80;border:1px solid rgba(34,197,94,.25)}
+.fi-chat{background:rgba(168,85,247,.2);color:#c084fc;border:1px solid rgba(168,85,247,.28)}
+.fi-bg{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.25)}
+.fi-ppl{background:rgba(20,184,166,.18);color:#2dd4bf;border:1px solid rgba(20,184,166,.28)}
+.fi-rec{background:rgba(239,68,68,.18);color:#f87171;border:1px solid rgba(239,68,68,.28)}
+.feat-card h4{font-size:.9rem;font-weight:600;color:#e8f0fe;margin:0}
+.feat-card p{font-size:.8rem;color:#7fa8d8;line-height:1.75;margin:0}
+.feat-kbd{
+  display:inline-block;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+  border-radius:6px;padding:2px 8px;font-size:.7rem;color:#c5d8f5;
+  font-family:monospace;
+}
+
+/* ===== SECTION 4 — TIPS ===== */
+.tip-card{padding:1.3rem;display:flex;align-items:flex-start;gap:.9rem}
+.tip-num{
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,#e66a1a,#ff9f50);
+  color:#fff;font-size:.85rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(230,106,26,0.35);
+}
+.tip-card h4{font-size:.9rem;font-weight:600;color:#e8f0fe;margin-bottom:.3rem}
+.tip-card p{font-size:.8rem;color:#7fa8d8;line-height:1.75}
+
+/* ===== SECTION 5 — PROBLEMS TABLE ===== */
+.prob-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.prob-table th{
+  padding:.9rem 1.2rem;text-align:right;font-weight:600;
+  background:rgba(230,106,26,.18);color:#ff9f50;
+  font-size:.82rem;letter-spacing:.02em;
+}
+.prob-table th:first-child{border-radius:0 10px 0 0}
+.prob-table th:last-child{border-radius:10px 0 0 0}
+.prob-table td{padding:.85rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.07);color:#c5d8f5;line-height:1.75}
+.prob-table tr:last-child td{border-bottom:none}
+.prob-table tr:hover td{background:rgba(255,255,255,.04)}
+.prob-icon{color:#ff8c42;margin-left:.4rem}
+.sol-icon{color:#4ade80;margin-left:.4rem}
+.prob-wrap{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px;overflow:hidden}
+
+/* ===== SECTION 6 — SHORTCUTS ===== */
+.shortcut-table{width:100%;border-collapse:collapse;font-size:.86rem}
+.shortcut-table th{
+  padding:.8rem 1.2rem;text-align:right;font-weight:600;
+  background:rgba(26,79,160,.35);color:#6ab0ff;font-size:.8rem;
+}
+.shortcut-table th:first-child{border-radius:0 10px 0 0}
+.shortcut-table th:last-child{border-radius:10px 0 0 0}
+.shortcut-table td{padding:.75rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.06);color:#c5d8f5;vertical-align:middle}
+.shortcut-table tr:last-child td{border-bottom:none}
+.shortcut-table tr:hover td{background:rgba(255,255,255,.04)}
+.key-wrap{display:flex;gap:4px;flex-direction:row-reverse;flex-wrap:wrap}
+.key{
+  display:inline-flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);
+  border-bottom:3px solid rgba(255,255,255,.18);
+  border-radius:7px;padding:3px 10px;font-size:.75rem;
+  color:#e8f0fe;font-family:monospace;font-weight:600;min-width:32px;
+}
+.os-tag{font-size:.68rem;color:#94b8e8;margin-left:4px}
+.sc-wrap{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px;overflow:hidden}
+
+/* ===== SECTION 7 — CHECKLIST ===== */
+.checklist{display:grid;gap:.7rem}
+.cl-item{
+  display:flex;align-items:center;gap:.9rem;
+  background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;padding:1rem 1.2rem;cursor:pointer;
+  transition:all .25s cubic-bezier(.34,1.4,.64,1);
+  user-select:none;
+}
+.cl-item:hover{background:rgba(255,255,255,.09);transform:translateX(-4px)}
+.cl-item.checked{
+  background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);
+  transform:none;
+}
+.cl-item.checked .cl-label{color:#86efac;text-decoration:line-through;opacity:.7}
+.cl-box{
+  width:26px;height:26px;border-radius:8px;flex-shrink:0;
+  border:2px solid rgba(255,255,255,.25);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .25s;background:transparent;
+}
+.cl-item.checked .cl-box{
+  background:linear-gradient(135deg,#22c55e,#4ade80);border-color:transparent;
+  box-shadow:0 4px 14px rgba(34,197,94,.35);
+}
+.cl-box i{font-size:.75rem;color:#fff;opacity:0;transition:opacity .2s}
+.cl-item.checked .cl-box i{opacity:1}
+.cl-label{font-size:.9rem;color:#c5d8f5;font-weight:500;transition:all .25s}
+.cl-progress-wrap{
+  margin-top:1.2rem;display:flex;align-items:center;gap:.8rem;
+}
+.cl-progress-bar{flex:1;height:8px;border-radius:100px;background:rgba(255,255,255,.1)}
+.cl-progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,#22c55e,#4ade80);transition:width .4s ease}
+.cl-pct{font-size:.82rem;font-weight:700;color:#4ade80;min-width:36px;text-align:left}
+#clDone{
+  display:none;margin-top:1.2rem;padding:1rem 1.5rem;
+  background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);
+  border-radius:16px;text-align:center;color:#86efac;font-size:.95rem;font-weight:600;
+  animation:popIn .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ===== SUMMARY ===== */
+#summary{padding:3.5rem 0 4rem}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.9rem}
+.sum-card{
+  padding:1.2rem;text-align:center;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);
+  border-radius:18px;
+  transition:transform .25s cubic-bezier(.34,1.4,.64,1),box-shadow .25s;
+}
+.sum-card:hover{transform:translateY(-5px);box-shadow:0 14px 40px rgba(0,0,0,.4)}
+.sum-icon{font-size:2rem;margin-bottom:.5rem}
+.sum-card h4{font-size:.85rem;font-weight:600;color:#e8f0fe;margin-bottom:.3rem}
+.sum-card p{font-size:.78rem;color:#7fa8d8;line-height:1.6}
+
+/* ===== FOOTER ===== */
+footer{
+  background:rgba(5,12,35,0.75);border-top:1px solid rgba(255,255,255,.08);
+  padding:1.5rem 0;text-align:center;
+  backdrop-filter:blur(20px);
+}
+footer p{font-size:.8rem;color:#4a6fa8}
+footer span{color:#ff8c42}
+
+/* ===== FAQ ACCORDION ===== */
+.faq-item{
+  background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;overflow:hidden;margin-bottom:.7rem;
+  transition:box-shadow .2s;
+}
+.faq-item:hover{box-shadow:0 6px 24px rgba(0,0,0,.28)}
+.faq-q{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 1.3rem;cursor:pointer;font-size:.9rem;font-weight:600;color:#e8f0fe;
+  gap:1rem;
+}
+.faq-q i{color:#ff8c42;transition:transform .3s;flex-shrink:0}
+.faq-item.open .faq-q i{transform:rotate(180deg)}
+.faq-a{
+  max-height:0;overflow:hidden;
+  transition:max-height .35s cubic-bezier(.4,0,.2,1),padding .3s;
+  font-size:.85rem;color:#94b8e8;line-height:1.85;
+  padding:0 1.3rem;
+}
+.faq-item.open .faq-a{max-height:200px;padding:.5rem 1.3rem 1.2rem}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  .bento-3{grid-template-columns:1fr}
+  .bento-2{grid-template-columns:1fr}
+  .span2,.span3{grid-column:span 1}
+  #floatNav{display:none}
+  .header-badge{display:none}
+  .hero h1{font-size:1.7rem}
+}
+@media(max-width:580px){
+  .hero-stats{gap:.6rem}
+  .stat-chip{font-size:.75rem;padding:.35rem .8rem}
+}
+</style>
+</head>
+<body>
+
+<div class="mesh-bg"></div>
+<div id="readingBar"><div id="readingFill"></div></div>
+
+<nav id="floatNav" aria-label="ناوبری سریع">
+  <button class="nav-dot active" data-section="hero" data-label="صفحه اصلی" onclick="scrollTo('#hero')"></button>
+  <button class="nav-dot" data-section="s1" data-label="معرفی" onclick="scrollTo('#s1')"></button>
+  <button class="nav-dot" data-section="s2" data-label="ورود به جلسه" onclick="scrollTo('#s2')"></button>
+  <button class="nav-dot" data-section="s3" data-label="امکانات" onclick="scrollTo('#s3')"></button>
+  <button class="nav-dot" data-section="s4" data-label="نکات حرفه‌ای" onclick="scrollTo('#s4')"></button>
+  <button class="nav-dot" data-section="s5" data-label="مشکلات رایج" onclick="scrollTo('#s5')"></button>
+  <button class="nav-dot" data-section="s6" data-label="میانبرها" onclick="scrollTo('#s6')"></button>
+  <button class="nav-dot" data-section="s7" data-label="چک‌لیست" onclick="scrollTo('#s7')"></button>
+  <button class="nav-dot" data-section="summary" data-label="جمع‌بندی" onclick="scrollTo('#summary')"></button>
+</nav>
+
+<button id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="بازگشت به بالا" aria-label="بازگشت به بالا">
+  <i class="fa fa-arrow-up"></i>
+</button>
+
+<div class="wrapper">
+
+<header>
+  <div class="container">
+    <div class="header-inner">
+      <div class="logo-area">
+        <img src="data:image/jpeg;base64,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" alt="لوگوی بانیان صنعت پرشین" class="logo-img">
+        <div>
+          <div class="brand-name">بانیان صنعت پرشین</div>
+          <div class="brand-sub">سیستم آموزش الکترونیکی</div>
+        </div>
+      </div>
+      <div class="header-badge"><i class="fa fa-video" style="margin-left:.4rem"></i>آموزش Google Meet</div>
+    </div>
+  </div>
+</header>
+
+<section id="hero" class="hero">
+  <div class="container">
+    <div class="reveal">
+      <div class="hero-tag"><i class="fa fa-graduation-cap"></i> دوره آموزشی سریع</div>
+      <h1>راهنمای کامل<br><span>Google Meet</span><br>برای محیط اداری</h1>
+      <p class="hero-desc">در کمتر از ۱۰ دقیقه با تمام ابزارهای حرفه‌ای Google Meet آشنا شوید و جلسات آنلاین موفق برگزار کنید</p>
+      <div class="hero-stats">
+        <span class="stat-chip"><i class="fa fa-clock"></i> ۱۰–۱۵ دقیقه</span>
+        <span class="stat-chip"><i class="fa fa-layer-group"></i> ۷ بخش آموزشی</span>
+        <span class="stat-chip"><i class="fa fa-user"></i> مبتدی تا متوسط</span>
+        <span class="stat-chip"><i class="fa fa-check-circle"></i> چک‌لیست تعاملی</span>
+      </div>
+      <button class="btn-start" onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})">
+        <i class="fa fa-play-circle" style="margin-left:.5rem"></i>شروع آموزش
+      </button>
+    </div>
+  </div>
+</section>
+
+<section id="s1">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-num">۱</div>
+      <h2>معرفی Google Meet</h2>
+      <div class="divider"></div>
+      <p>آشنایی با کاربردها و مزایای استفاده در محیط سازمانی</p>
+    </div>
+    <div class="bento bento-3">
+      <div class="glass bento-card span2 intro-main reveal-l">
+        <div class="intro-logo-meet">📹</div>
+        <div class="intro-title">Google Meet چیست؟</div>
+        <div class="intro-body">
+          Google Meet یک پلتفرم ویدئوکنفرانس ابری از شرکت گوگل است که امکان برگزاری جلسات آنلاین با کیفیت بالا را فراهم می‌کند. این ابزار بدون نیاز به نصب نرم‌افزار اضافی و صرفاً از طریق مرورگر کروم قابل استفاده است.
+          <br><br>
+          با پشتیبانی از تا <strong style="color:#ff8c42">۵۰۰ شرکت‌کننده</strong> همزمان، Google Meet انتخاب اول سازمان‌های بزرگ برای جلسات رسمی، وبینارها و آموزش‌های آنلاین است.
+        </div>
+        <!-- تصویر صفحه اصلی Google Meet -->
+        <img src="images/meet-homepage.jpg" alt="صفحه اصلی Google Meet" class="screenshot" onerror="this.style.display='none'">
+        <div class="badge-row">
+          <span class="badge badge-blue"><i class="fa fa-cloud" style="margin-left:.3rem"></i>ابری</span>
+          <span class="badge badge-orange"><i class="fa fa-lock" style="margin-left:.3rem"></i>رمزنگاری شده</span>
+          <span class="badge badge-blue"><i class="fa fa-mobile-alt" style="margin-left:.3rem"></i>چندپلتفرمی</span>
+          <span class="badge badge-orange"><i class="fa fa-sync" style="margin-left:.3rem"></i>یکپارچه با Google</span>
+        </div>
+      </div>
+      <div class="glass bento-card reveal-r">
+        <div class="intro-title" style="margin-bottom:1rem">مزایای کلیدی سازمانی</div>
+        <div class="benefit-item">
+          <div class="benefit-icon"><i class="fa fa-shield-alt"></i></div>
+          <div class="benefit-text">
+            <strong>امنیت بالا</strong>
+            <span>رمزنگاری end-to-end برای همه جلسات</span>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon"><i class="fa fa-calendar-check"></i></div>
+          <div class="benefit-text">
+            <strong>یکپارچگی با Google Calendar</strong>
+            <span>زمان‌بندی خودکار و ارسال دعوتنامه</span>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon"><i class="fa fa-closed-captioning"></i></div>
+          <div class="benefit-text">
+            <strong>زیرنویس زنده</strong>
+            <span>تبدیل صحبت به متن در زمان واقعی</span>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon"><i class="fa fa-file-alt"></i></div>
+          <div class="benefit-text">
+            <strong>یکپارچه با Google Drive</strong>
+            <span>اشتراک‌گذاری فایل‌ها بدون خروج</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:1.1rem">
+      <div class="faq-item reveal glass-sm">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span><i class="fa fa-question-circle accent" style="margin-left:.5rem"></i>آیا به دوربین یا هدفون خاصی نیاز است؟</span>
+          <i class="fa fa-chevron-down"></i>
+        </div>
+        <div class="faq-a">خیر. دوربین داخلی لپ‌تاپ یا گوشی برای اکثر جلسات کافی است. اما برای کیفیت بهتر صدا، استفاده از هدست توصیه می‌شود تا از اکو و نویز محیطی جلوگیری شود.</div>
+      </div>
+      <div class="faq-item reveal glass-sm">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span><i class="fa fa-question-circle accent" style="margin-left:.5rem"></i>آیا Google Meet رایگان است؟</span>
+          <i class="fa fa-chevron-down"></i>
+        </div>
+        <div class="faq-a">نسخه پایه Google Meet برای همه دارندگان حساب گوگل رایگان است. نسخه سازمانی (Google Workspace) امکانات بیشتری مانند ضبط جلسات، ظرفیت بالاتر و مدیریت دامنه دارد.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s2">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-num">۲</div>
+      <h2>ورود به Google Meet</h2>
+      <div class="divider"></div>
+      <p>سه روش برای شروع یا پیوستن به جلسه</p>
+    </div>
+    <div class="bento bento-3 reveal">
+      <div class="glass step-card">
+        <div class="step-num">۱</div>
+        <div class="step-icon"><i class="fa fa-sign-in-alt"></i></div>
+        <h4>ورود با حساب Google</h4>
+        <p>به <strong style="color:#ff8c42">meet.google.com</strong> بروید و با حساب سازمانی یا شخصی گوگل وارد شوید.</p>
+        <!-- تصویر مرحله 1 -->
+        <img src="images/meet-homepage.jpg" alt="ورود به Google Meet" class="screenshot" onerror="this.style.display='none'">
+      </div>
+      <div class="glass step-card">
+        <div class="step-num">۲</div>
+        <div class="step-icon"><i class="fa fa-plus-circle"></i></div>
+        <h4>ایجاد جلسه جدید</h4>
+        <p>روی «جلسه جدید» کلیک کنید. می‌توانید جلسه فوری شروع کنید یا لینک را برای بعد ذخیره نمایید.</p>
+        <!-- تصویر مرحله 2 -->
+        <img src="images/meet-new-meeting.jpg" alt="ایجاد جلسه جدید" class="screenshot" onerror="this.style.display='none'">
+      </div>
+      <div class="glass step-card">
+        <div class="step-num">۳</div>
+        <div class="step-icon"><i class="fa fa-link"></i></div>
+        <h4>پیوستن با لینک</h4>
+        <p>لینک دریافتی را در مرورگر وارد کنید یا کد ۱۰ حرفی جلسه را در کادر «وارد کردن کد» تایپ نمایید.</p>
+        <!-- تصویر مرحله 3 -->
+        <img src="images/meet-join-code.jpg" alt="پیوستن با کد جلسه" class="screenshot" onerror="this.style.display='none'">
+      </div>
+    </div>
+    <div class="glass bento-card reveal" style="margin-top:1.1rem;padding:1.5rem">
+      <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:1rem">
+        <div style="width:38px;height:38px;border-radius:10px;background:rgba(230,106,26,.2);display:flex;align-items:center;justify-content:center;color:#ff8c42">
+          <i class="fa fa-lightbulb"></i>
+        </div>
+        <strong style="color:#ff8c42">نکته مهم قبل از ورود</strong>
+      </div>
+      <p style="font-size:.88rem;color:#94b8e8;line-height:1.9">
+        پیش از ورود به جلسه، یک صفحه پیش‌نمایش نمایش داده می‌شود. در این صفحه می‌توانید دوربین و میکروفون را آزمایش کنید، نام نمایشی خود را تنظیم کنید و پس‌زمینه مجازی انتخاب نمایید. این مرحله را نادیده نگیرید!
+      </p>
+      <!-- تصویر صفحه پیش‌نمایش قبل از ورود -->
+      <img src="images/meet-preview-before-join.jpg" alt="صفحه پیش‌نمایش قبل از ورود به جلسه" class="screenshot" style="margin-top:12px" onerror="this.style.display='none'">
+    </div>
+  </div>
+</section>
+
+<section id="s3">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-num">۳</div>
+      <h2>امکانات اصلی جلسه</h2>
+      <div class="divider"></div>
+      <p>ابزارهای مهم که در هر جلسه به آن‌ها نیاز دارید</p>
+    </div>
+    <!-- تصویر محیط داخل جلسه Google Meet -->
+    <img src="images/meet-in-call-interface.jpg" alt="محیط داخل جلسه Google Meet" class="screenshot reveal" style="margin-bottom:1.2rem" onerror="this.style.display='none'">
+    <div class="bento bento-auto reveal">
+      <div class="glass-sm feat-card">
+        <div class="feat-icon fi-mic"><i class="fa fa-microphone"></i></div>
+        <h4>میکروفون</h4>
+        <p>با کلیک روی آیکون میکروفون یا کلید <span class="feat-kbd">Ctrl+D</span> صدای خود را قطع یا وصل کنید. هنگام عدم صحبت میکروفون را خاموش نگه دارید.</p>
+      </div>
+      <div class="glass-sm feat-card">
+        <div class="feat-icon fi-cam"><i class="fa fa-video"></i></div>
+        <h4>دوربین</h4>
+        <p>با <span class="feat-kbd">Ctrl+E</span> دوربین را روشن یا خاموش کنید. در صورت نداشتن دوربین مناسب می‌توانید تصویر را غیرفعال نمایید.</p>
+      </div>
+      <div class="glass-sm feat-card">
+        <div class="feat-icon fi-share"><i class="fa fa-desktop"></i></div>
+        <h4>اشتراک‌گذاری صفحه</h4>
+        <p>روی «ارائه» کلیک کنید. می‌توانید کل صفحه، یک پنجره خاص یا یک تب مرورگر را به اشتراک بگذارید.</p>
+        <!-- تصویر اشتراک‌گذاری صفحه -->
+        <img src="images/meet-screen-sharing.jpg" alt="اشتراک‌گذاری صفحه در Google Meet" class="screenshot" style="margin-top:8px" onerror="this.style.display='none'">
+      </div>
+      <div class="glass-sm feat-card">
+        <div class="feat-icon fi-chat"><i class="fa fa-comment-alt"></i></div>
+        <h4>چت جلسه</h4>
+        <p>با کلیک روی آیکون چت یا <span class="feat-kbd">Ctrl+Alt+C</span> پنل پیام باز می‌شود. می‌توانید لینک، فایل و پیام ارسال کنید.</p>
+        <!-- تصویر پنل چت -->
+        <img src="images/meet-chat-panel.jpg" alt="پنل چت Google Meet" class="screenshot" style="margin-top:8px" onerror="this.style.display='none'">
+      </div>
+      <div class="glass-sm feat-card">
+        <div class="feat-icon fi-bg"><i class="fa fa-image"></i></div>
+        <h4>تغییر پس‌زمینه</h4>
+        <p>روی سه‌نقطه کنار دوربین کلیک و گزینه پس‌زمینه را انتخاب کنید. می‌توانید تصویر دلخواه آپلود نمایید.</p>
+        <!-- تصویر منوی پس‌زمینه -->
+        <img src="images/meet-background-effects.jpg" alt="تغییر پس‌زمینه در Google Meet" class="screenshot" style="margin-top:8px" onerror="this.style.display='none'">
+      </div>
+      <div class="glass-sm feat-card">
+        <div class="feat-icon fi-ppl"><i class="fa fa-users"></i></div>
+        <h4>لیست شرکت‌کنندگان</h4>
+        <p>با <span class="feat-kbd">Ctrl+Alt+P</span> لیست کامل شرکت‌کنندگان را مشاهده کنید. میزبان می‌تواند مشارکت‌کنندگان را مدیریت کند.</p>
+        <!-- تصویر لیست شرکت‌کنندگان -->
+        <img src="images/meet-participants-list.jpg" alt="لیست شرکت‌کنندگان Google Meet" class="screenshot" style="margin-top:8px" onerror="this.style.display='none'">
+      </div>
+      <div class="glass-sm feat-card">
+        <div class="feat-icon fi-rec"><i class="fa fa-circle" style="color:#f87171"></i></div>
+        <h4>ضبط جلسه</h4>
+        <p>از منوی سه‌نقطه گزینه «ضبط جلسه» را انتخاب کنید. فایل ضبط در Google Drive ذخیره می‌شود (نیاز به Workspace دارد).</p>
+        <!-- تصویر گزینه ضبط -->
+        <img src="images/meet-recording.jpg" alt="ضبط جلسه در Google Meet" class="screenshot" style="margin-top:8px" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s4">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-num">۴</div>
+      <h2>نکات حرفه‌ای برای جلسه موفق</h2>
+      <div class="divider"></div>
+      <p>این نکات کیفیت جلسات شما را به سطح حرفه‌ای می‌رساند</p>
+    </div>
+    <div class="bento bento-2 reveal">
+      <div class="glass-sm tip-card">
+        <div class="tip-num">۱</div>
+        <div>
+          <h4><i class="fa fa-headphones accent" style="margin-left:.4rem"></i>تست صدا قبل از ورود</h4>
+          <p>حداقل ۵ دقیقه قبل از شروع جلسه وارد شوید. میکروفون و بلندگو را آزمایش کنید تا مشکلات فنی غافلگیرتان نکنند.</p>
+        </div>
+      </div>
+      <div class="glass-sm tip-card">
+        <div class="tip-num">۲</div>
+        <div>
+          <h4><i class="fa fa-headset accent" style="margin-left:.4rem"></i>استفاده از هدفون</h4>
+          <p>هدست باعث کاهش اکو و نویز محیطی می‌شود. سایرین صدای واضح‌تری از شما می‌شنوند و جلسه با کیفیت‌تر پیش می‌رود.</p>
+        </div>
+      </div>
+      <div class="glass-sm tip-card">
+        <div class="tip-num">۳</div>
+        <div>
+          <h4><i class="fa fa-lightbulb accent" style="margin-left:.4rem"></i>محیط مناسب</h4>
+          <p>پشت به نور نایستید. نور باید از جلو بتابد. محیط آرام انتخاب کنید و از قرار گرفتن در مقابل پنجره خودداری نمایید.</p>
+        </div>
+      </div>
+      <div class="glass-sm tip-card">
+        <div class="tip-num">۴</div>
+        <div>
+          <h4><i class="fa fa-microphone-slash accent" style="margin-left:.4rem"></i>مدیریت میکروفون</h4>
+          <p>وقتی صحبت نمی‌کنید میکروفون را خاموش کنید (<span class="feat-kbd">Ctrl+D</span>). این کار نویز محیطی را حذف می‌کند.</p>
+        </div>
+      </div>
+      <div class="glass-sm tip-card">
+        <div class="tip-num">۵</div>
+        <div>
+          <h4><i class="fa fa-eye accent" style="margin-left:.4rem"></i>نگاه به دوربین</h4>
+          <p>برای حفظ ارتباط چشمی به دوربین نگاه کنید نه به صورت افراد در صفحه. این کار حس حضور واقعی ایجاد می‌کند.</p>
+        </div>
+      </div>
+      <div class="glass-sm tip-card">
+        <div class="tip-num">۶</div>
+        <div>
+          <h4><i class="fa fa-clock accent" style="margin-left:.4rem"></i>رعایت آداب جلسه</h4>
+          <p>برای صحبت کردن در جلسات بزرگ دست خود را بالا ببرید یا از قابلیت Raise Hand استفاده کنید. برنامه جلسه را از قبل بخوانید.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s5">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-num">۵</div>
+      <h2>مشکلات رایج و راه‌حل سریع</h2>
+      <div class="divider"></div>
+      <p>اگر با مشکلی روبرو شدید، راه‌حل را اینجا بیابید</p>
+    </div>
+    <div class="prob-wrap reveal">
+      <table class="prob-table" role="table" aria-label="مشکلات رایج و راه‌حل‌ها">
+        <thead>
+          <tr><th width="40%"><i class="fa fa-exclamation-triangle prob-icon"></i>مشکل</th><th><i class="fa fa-check-circle sol-icon"></i>راه‌حل سریع</th></tr>
+        </thead>
+        <tbody><tr><td><i class="fa fa-volume-mute" style="color:#f87171;margin-left:.5rem"></i>صدای من شنیده نمی‌شود</td><td>بررسی کنید میکروفون در تنظیمات Google Meet فعال باشد. در مرورگر دسترسی به میکروفون را تأیید کنید. هدفون را دوباره وصل کنید.</td></tr>
+        <tr><td><i class="fa fa-video-slash" style="color:#fbbf24;margin-left:.5rem"></i>تصویر دوربین نمایش داده نمی‌شود</td><td>در تنظیمات مرورگر دسترسی به دوربین را بررسی کنید. مطمئن شوید برنامه دیگری از دوربین استفاده نمی‌کند. مرورگر را مجدداً باز کنید.</td></tr>
+        <tr><td><i class="fa fa-wifi" style="color:#94a3b8;margin-left:.5rem"></i>اتصال اینترنت قطع می‌شود</td><td>به شبکه با‌ثبات‌تر (ترجیحاً کابلی) متصل شوید. سایر تب‌های مرورگر را ببندید. کیفیت ویدیو را کاهش دهید.</td></tr>
+        <tr><td><i class="fa fa-desktop" style="color:#c084fc;margin-left:.5rem"></i>اشتراک‌گذاری صفحه کار نمی‌کند</td><td>در macOS اجازه دسترسی به ضبط صفحه را بدهید. مطمئن شوید گزینه اشتراک‌گذاری صفحه مسدود نشده است. از کروم استفاده کنید.</td></tr>
+        <tr><td><i class="fa fa-exclamation-circle" style="color:#ff8c42;margin-left:.5rem"></i>صدا با تأخیر شنیده می‌شود</td><td>اتصال اینترنت را بررسی کنید. دوربین را خاموش کنید تا پهنای باند آزاد شود. تعداد تب‌های باز مرورگر را کاهش دهید.</td></tr>
+        <tr><td><i class="fa fa-door-open" style="color:#4ade80;margin-left:.5rem"></i>نمی‌توانم وارد جلسه شوم</td><td>منتظر تأیید میزبان بمانید (Knock). مطمئن شوید با حساب درست وارد شده‌اید. لینک جلسه را دوباره کپی و باز کنید.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="s6">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-num">۶</div>
+      <h2>میانبرهای کاربردی کیبورد</h2>
+      <div class="divider"></div>
+      <p>کارهای مهم را با چند کلید انجام دهید</p>
+    </div>
+    <div class="sc-wrap reveal">
+      <!-- تصویر صفحه راهنمای میانبرها -->
+      <img src="images/meet-shortcuts-help.jpg" alt="راهنمای میانبرهای Google Meet" class="screenshot" style="margin-bottom:1rem" onerror="this.style.display='none'">
+      <table class="shortcut-table" role="table" aria-label="میانبرهای کیبورد Google Meet">
+        <thead><tr><th width="45%">عملکرد</th><th>Windows / Linux</th><th>macOS</th></tr></thead>
+        <tbody>
+          <tr><td><i class="fa fa-microphone" style="color:#ff9f50;margin-left:.5rem"></i>قطع / وصل میکروفون</td><td><div class="key-wrap"><span class="key">Ctrl</span><span class="key">D</span></div></td><td><div class="key-wrap"><span class="key">⌘</span><span class="key">D</span></div></td></tr>
+          <tr><td><i class="fa fa-video" style="color:#6ab0ff;margin-left:.5rem"></i>روشن / خاموش دوربین</td><td><div class="key-wrap"><span class="key">Ctrl</span><span class="key">E</span></div></td><td><div class="key-wrap"><span class="key">⌘</span><span class="key">E</span></div></td></tr>
+          <tr><td><i class="fa fa-users" style="color:#2dd4bf;margin-left:.5rem"></i>مشاهده شرکت‌کنندگان</td><td><div class="key-wrap"><span class="key">Ctrl</span><span class="key">Alt</span><span class="key">P</span></div></td><td><div class="key-wrap"><span class="key">⌘</span><span class="key">Alt</span><span class="key">P</span></div></td></tr>
+          <tr><td><i class="fa fa-comment" style="color:#c084fc;margin-left:.5rem"></i>باز کردن چت</td><td><div class="key-wrap"><span class="key">Ctrl</span><span class="key">Alt</span><span class="key">C</span></div></td><td><div class="key-wrap"><span class="key">⌘</span><span class="key">Alt</span><span class="key">C</span></div></td></tr>
+          <tr><td><i class="fa fa-hand-paper" style="color:#fbbf24;margin-left:.5rem"></i>بالا بردن دست</td><td><div class="key-wrap"><span class="key">Ctrl</span><span class="key">Alt</span><span class="key">H</span></div></td><td><div class="key-wrap"><span class="key">⌘</span><span class="key">Alt</span><span class="key">H</span></div></td></tr>
+          <tr><td><i class="fa fa-sign-out-alt" style="color:#f87171;margin-left:.5rem"></i>خروج از جلسه</td><td><div class="key-wrap"><span class="key">Ctrl</span><span class="key">W</span></div></td><td><div class="key-wrap"><span class="key">⌘</span><span class="key">W</span></div></td></tr>
+          <tr><td><i class="fa fa-question-circle" style="color:#94b8e8;margin-left:.5rem"></i>مشاهده همه میانبرها</td><td><div class="key-wrap"><span class="key">Ctrl</span><span class="key">/</span></div></td><td><div class="key-wrap"><span class="key">⌘</span><span class="key">/</span></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="s7">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-num">۷</div>
+      <h2>چک‌لیست قبل از جلسه</h2>
+      <div class="divider"></div>
+      <p>قبل از هر جلسه این موارد را تیک بزنید تا جلسه‌ای بی‌دردسر داشته باشید</p>
+    </div>
+    <div class="glass bento-card reveal" style="max-width:720px">
+      <div class="checklist" id="checklist">
+        <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-box"><i class="fa fa-check"></i></div><div class="cl-label"><i class="fa fa-wifi accent" style="margin-left:.4rem"></i>اتصال اینترنت پایدار را بررسی کردم</div></div>
+        <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-box"><i class="fa fa-check"></i></div><div class="cl-label"><i class="fa fa-microphone accent" style="margin-left:.4rem"></i>میکروفون را آزمایش و تنظیم کردم</div></div>
+        <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-box"><i class="fa fa-check"></i></div><div class="cl-label"><i class="fa fa-video accent" style="margin-left:.4rem"></i>دوربین کار می‌کند و تصویر واضح است</div></div>
+        <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-box"><i class="fa fa-check"></i></div><div class="cl-label"><i class="fa fa-headphones accent" style="margin-left:.4rem"></i>هدفون یا هدست آماده است</div></div>
+        <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-box"><i class="fa fa-check"></i></div><div class="cl-label"><i class="fa fa-lightbulb accent" style="margin-left:.4rem"></i>نور اتاق مناسب است و از جلو می‌تابد</div></div>
+        <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-box"><i class="fa fa-check"></i></div><div class="cl-label"><i class="fa fa-volume-mute accent" style="margin-left:.4rem"></i>منابع نویز محیطی را خاموش کردم</div></div>
+        <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-box"><i class="fa fa-check"></i></div><div class="cl-label"><i class="fa fa-file-alt accent" style="margin-left:.4rem"></i>دستور جلسه را خوانده و آماده‌ام</div></div>
+        <div class="cl-item" onclick="toggleCheck(this)"><div class="cl-box"><i class="fa fa-check"></i></div><div class="cl-label"><i class="fa fa-clock accent" style="margin-left:.4rem"></i>۵ دقیقه زودتر وارد شدم و همه‌چیز را تست کردم</div></div>
+      </div>
+      <div class="cl-progress-wrap"><div class="cl-progress-bar"><div class="cl-progress-fill" id="clFill" style="width:0%"></div></div><div class="cl-pct" id="clPct">0%</div></div>
+      <div id="clDone"><i class="fa fa-check-circle" style="font-size:1.4rem;margin-bottom:.4rem;display:block;color:#4ade80"></i>آفرین! آماده جلسه حرفه‌ای هستید 🎉</div>
+    </div>
+  </div>
+</section>
+
+<section id="summary">
+  <div class="container">
+    <div class="sec-header reveal" style="text-align:center;max-width:600px;margin:0 auto 2rem">
+      <div class="sec-num" style="margin:0 auto .6rem">✓</div>
+      <h2>جمع‌بندی در ۱ دقیقه</h2>
+      <div class="divider" style="margin:.6rem auto"></div>
+      <p>مهم‌ترین نکاتی که از این آموزش باید به یاد بسپارید</p>
+    </div>
+    <div class="summary-grid reveal">
+      <div class="sum-card"><div class="sum-icon">🌐</div><h4>دسترسی آسان</h4><p>فقط با مرورگر و حساب گوگل، بدون نصب نرم‌افزار</p></div>
+      <div class="sum-card"><div class="sum-icon">🎙</div><h4>مدیریت صدا</h4><p>Ctrl+D برای قطع/وصل میکروفون، همیشه آن را مدیریت کنید</p></div>
+      <div class="sum-card"><div class="sum-icon">📷</div><h4>کنترل تصویر</h4><p>Ctrl+E برای دوربین، محیط روشن و بدون نویز</p></div>
+      <div class="sum-card"><div class="sum-icon">🖥</div><h4>اشتراک صفحه</h4><p>فقط پنجره موردنظر را اشتراک بگذارید نه کل صفحه</p></div>
+      <div class="sum-card"><div class="sum-icon">⚡</div><h4>۵ دقیقه زودتر</h4><p>آزمایش قبل از جلسه از مشکلات فنی جلوگیری می‌کند</p></div>
+      <div class="sum-card"><div class="sum-icon">🎧</div><h4>هدفون بهتر است</h4><p>اکو و نویز را کاهش می‌دهد، کیفیت جلسه را بالا می‌برد</p></div>
+    </div>
+    <div class="glass bento-card reveal" style="margin-top:1.5rem;text-align:center;padding:2rem">
+      <div style="font-size:2rem;margin-bottom:.6rem">🎓</div>
+      <h3 style="color:#fff;font-size:1.2rem;margin-bottom:.6rem">آموزش تکمیل شد!</h3>
+      <p style="color:#94b8e8;font-size:.9rem;line-height:1.9;max-width:500px;margin:0 auto 1.2rem">
+        حالا با اطمینان می‌توانید در جلسات Google Meet شرکت کنید. اگر سوالی داشتید با واحد آموزش بانیان صنعت پرشین تماس بگیرید.
+      </p>
+      <button class="btn-start" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <i class="fa fa-redo" style="margin-left:.5rem"></i>مرور مجدد
+      </button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© ۱۴۰۴ <span>بانیان صنعت پرشین</span> — تمام حقوق محفوظ است | سیستم آموزش الکترونیکی</p>
+  </div>
+</footer>
+
+</div>
+
+<script>
+window.addEventListener('scroll', () => {
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = (window.scrollY / total) * 100;
+  document.getElementById('readingFill').style.width = pct + '%';
+  const bt = document.getElementById('backTop');
+  bt.classList.toggle('show', window.scrollY > 400);
+  const sections = ['hero','s1','s2','s3','s4','s5','s6','s7','summary'];
+  let current = sections[0];
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top <= 120) current = id;
+  });
+  document.querySelectorAll('.nav-dot').forEach(dot => {
+    dot.classList.toggle('active', dot.dataset.section === current);
+  });
+});
+function scrollTo(id) { document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' }); }
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('vis'), e.target.dataset.delay || 0); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach((el, i) => {
+  el.dataset.delay = (i % 4) * 80;
+  observer.observe(el);
+});
+function toggleFaq(el) {
+  const item = el.closest('.faq-item');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+function toggleCheck(item) {
+  item.classList.toggle('checked');
+  updateProgress();
+}
+function updateProgress() {
+  const items = document.querySelectorAll('.cl-item');
+  const checked = document.querySelectorAll('.cl-item.checked').length;
+  const pct = Math.round((checked / items.length) * 100);
+  document.getElementById('clFill').style.width = pct + '%';
+  document.getElementById('clPct').textContent = pct + '%';
+  const done = document.getElementById('clDone');
+  done.style.display = pct === 100 ? 'block' : 'none';
+}
+</script>
+</body>
+</html>
